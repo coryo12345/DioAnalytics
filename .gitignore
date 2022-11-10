@@ -106,3 +106,5 @@ dist
 
 # Files For this Project
 *.db
+*.db-shm
+*.db-wal

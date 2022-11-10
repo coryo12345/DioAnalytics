@@ -1,6 +1,7 @@
-import { Client, GatewayIntentBits, Guild } from 'discord.js';
+import { Client, Collection, GatewayIntentBits, Guild, GuildMember } from 'discord.js';
+import axios from 'axios';
 
-const LOG_TIMEOUT = 1000 * 5;
+const LOG_TIMEOUT = 1000 * 50; // this should be at least once a minute
 
 export function startBot(botToken: string, timelogURL: string) {
   const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -43,6 +44,10 @@ async function logTimeForServer(guild: Guild) {
       } catch (err) {
         return;
       }
-      console.log(`${guild.name} ${channel.name} `, channel.members);
+      (channel.members as Collection<string, GuildMember>).forEach((member, id) => {
+        console.log(`${guild.name} ${channel.name} ${id} ${member.user.username}#${member.user.discriminator}`);
+        // send this log to the datastore service
+        axios.get(`http://localhost:3000?guild=${guild.id}&user=${id}`);
+      });
     });
 }
