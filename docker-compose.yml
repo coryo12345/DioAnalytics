@@ -1,8 +1,26 @@
-version: "3.5"
+version: '3.5'
 
 services:
-  bot:
-    # TODO
+  datastore:
+    container_name: dioanalytics-datastore
+    image: dioanalytics-datastore
+    build:
+      context: ./datastore
+      dockerfile: dockerfile
+    volumes:
+      - timelogs:/app/data
 
-  ui:
-    # TODO
+  bot:
+    container_name: dioanalytics-bot
+    image: dioanalytics-bot
+    build:
+      context: ./bot
+      dockerfile: dockerfile
+    depends_on:
+      - datastore
+
+  # ui:
+  # TODO
+
+volumes:
+  timelogs:
