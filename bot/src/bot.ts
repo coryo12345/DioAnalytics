@@ -37,7 +37,7 @@ async function logTimeForServer(guild: Guild) {
   const channelManager = guild.channels;
   await channelManager.fetch();
   channelManager.cache
-    .filter((chan) => chan.isVoiceBased())
+    .filter((chan) => chan.isVoiceBased() && chan.id != guild.afkChannelId)
     .forEach(async (channel) => {
       try {
         await channel.fetch();
