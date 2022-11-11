@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ServerData from '../components/server/ServerData.vue';
+import UserList from '../components/server/UserList.vue';
+
+const urlSearchParams = new URLSearchParams(Astro.url.search);
+const params = Object.fromEntries(urlSearchParams.entries());
+
+if (!params.id || !params.id.length) {
+  return Astro.redirect('/');
+}
+
+const serverId = params.id;
+
+// fetch data from API
+const data = { time: 24 };
+---
+
+<Layout title="View Server">
+  <div class="flex flex-row items-center">
+    <!-- This will be the server icon -->
+    <span style="border-radius: 50%; height: 48px; width: 48px;" class="inline-block bg-gradient mr-2"></span>
+    <h1 class="text-4xl">Server Name</h1>
+  </div>
+  {JSON.stringify(params)}
+  <ServerData data={data} client:load />
+  <UserList client:visible />
+</Layout>

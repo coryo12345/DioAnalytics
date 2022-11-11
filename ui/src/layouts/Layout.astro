@@ -1,0 +1,56 @@
+---
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main class="max-w-5xl text-center w-max mx-auto pt-4">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --accent: 87, 138, 237;
+    --accent-gradient: linear-gradient(45deg, rgb(var(--accent)), #5bb8e3 30%, white 60%);
+    --white: #f6f6f6;
+  }
+
+  .bg-gradient {
+    background-image: var(--accent-gradient);
+    color: var(--white);
+    background-size: 400%;
+    background-position: 0%;
+  }
+
+  .text-gradient {
+    background-image: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400%;
+    background-position: 0%;
+  }
+
+  html {
+    font-family: system-ui, sans-serif;
+    background-color: var(--white);
+  }
+
+  code {
+    font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+      monospace;
+  }
+</style>

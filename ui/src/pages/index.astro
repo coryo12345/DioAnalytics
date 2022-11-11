@@ -1,0 +1,9 @@
+---
+import PickServer from '../components/index/PickServer.vue';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="The Time Keeper">
+  <h1 class="text-4xl font-semibold mb-8">Enter a Server ID</h1>
+  <PickServer client:load />
+</Layout>
