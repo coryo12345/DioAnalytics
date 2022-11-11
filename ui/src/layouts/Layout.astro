@@ -19,6 +19,7 @@ const { title } = Astro.props;
     <main class="max-w-5xl text-center w-max mx-auto pt-4">
       <slot />
     </main>
+    <div class="main-tooltip py-1 px-2"></div>
   </body>
 </html>
 
@@ -52,5 +53,18 @@ const { title } = Astro.props;
   code {
     font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
       monospace;
+  }
+
+  .main-tooltip {
+    position: fixed;
+    background: #ffffffdf;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    min-width: 10em;
+    min-height: 3em;
+    top: 0;
+    left: 0;
+    display: none;
+    translate: -50% calc(-100% - 12px);
   }
 </style>

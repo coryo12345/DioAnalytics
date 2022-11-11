@@ -12,17 +12,19 @@ if (!params.id || !params.id.length) {
 
 const serverId = params.id;
 
-// fetch data from API
-const data = { time: 24 };
+// fetch data from API - default to 7 day lookback
+const resp = await fetch(`${import.meta.env.DATASTORE_URL}/server?guild=${serverId}&days=${7}`);
+const data = await resp.json();
 ---
 
 <Layout title="View Server">
-  <div class="flex flex-row items-center">
+  <div class="flex flex-row items-center justify-center mb-8">
     <!-- This will be the server icon -->
     <span style="border-radius: 50%; height: 48px; width: 48px;" class="inline-block bg-gradient mr-2"></span>
     <h1 class="text-4xl">Server Name</h1>
   </div>
-  {JSON.stringify(params)}
+  <h1 class="text-2xl">Total Server Time</h1>
   <ServerData data={data} client:load />
+  <h1 class="mt-8 text-2xl">Time by User</h1>
   <UserList client:visible />
 </Layout>

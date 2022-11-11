@@ -1,1 +1,4 @@
-export type OverallData = Record<string, number>;
+export type OverallData = {
+  day: string;
+  time: number;
+};

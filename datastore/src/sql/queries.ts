@@ -59,3 +59,19 @@ DELETE FROM logs_raw;
 
 END;
 `;
+
+export const TIME_BY_SERVER = `
+SELECT
+		day,
+		hour,
+		sum(total_minutes) time
+FROM
+		user_time_by_hour
+WHERE
+		guildId = ?
+		AND day > datetime('now', ?)
+GROUP BY
+		day,
+		hour
+;
+`;
