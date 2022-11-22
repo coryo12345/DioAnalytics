@@ -38,7 +38,7 @@ const selectedLookback = ref(lookbacks.value[0]);
 watch(
   () => selectedLookback.value,
   async (lookback) => {
-    // fetch new data
+    // TODO: fetch new data
     const resp = await fetch(``);
   }
 );

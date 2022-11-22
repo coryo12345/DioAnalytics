@@ -75,3 +75,17 @@ GROUP BY
 		hour
 ;
 `;
+
+export const TIME_PER_USER = `
+SELECT
+		userId,
+		sum(total_minutes) time
+FROM
+		user_time_by_hour
+WHERE
+		guildId = ?
+		AND day > datetime('now', ?)
+GROUP BY
+		userId
+;
+`;

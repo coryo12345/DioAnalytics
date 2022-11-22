@@ -1,5 +1,5 @@
 import express from 'express';
-import { addUserEntry, getServerDataByLookback, processRawLogs } from './db';
+import { addUserEntry, getServerDataByLookback, getUserDataByServerAndLookback, processRawLogs } from './db';
 
 const PORT = 3001;
 const RECOMPILE_INTERVAL = 1000 * 60;
@@ -35,6 +35,24 @@ app.get('/server', async (req, res) => {
     return;
   }
   const data = await getServerDataByLookback(guildId, days);
+  res.send(data);
+});
+
+app.get('/users', async (req, res) => {
+  const guildId = req.query.guild ? req.query.guild.toString() : null;
+  if (guildId === null) {
+    res.sendStatus(400);
+    return;
+  }
+  const daysStr = req.query.days ? req.query.days.toString() : '7';
+  let days: number;
+  try {
+    days = parseInt(daysStr);
+  } catch (err) {
+    res.sendStatus(400);
+    return;
+  }
+  const data = await getUserDataByServerAndLookback(guildId, days);
   res.send(data);
 });
 
