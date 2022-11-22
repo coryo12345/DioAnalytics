@@ -4,7 +4,7 @@ export type OverallData = {
 };
 
 export type UserTimeSummary = {
-  id: string; // user id
+  userId: string; // user id
   time: number; // minutes for the lookback
 };
 

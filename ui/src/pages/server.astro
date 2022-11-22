@@ -1,9 +1,14 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import { Client } from 'discord.js';
+import 'vue3-easy-data-table/dist/style.css';
 import ServerData from '../components/server/ServerData.vue';
 import UserList from '../components/server/UserList.vue';
+import { getServerInfoFromCache } from '../discord/serverCache';
+import Layout from '../layouts/Layout.astro';
 import type { OverallData, UserTimeSummary } from '../models/server';
-import 'vue3-easy-data-table/dist/style.css';
+
+const client = new Client({ intents: [] });
+client.login(import.meta.env.DISCORD_BOT_TOKEN);
 
 const urlSearchParams = new URLSearchParams(Astro.url.search);
 const params = Object.fromEntries(urlSearchParams.entries());
@@ -14,6 +19,10 @@ if (!params.id || !params.id.length) {
 
 const serverId = params.id;
 const lookback = 7;
+
+async function getServerInfo() {
+  return await getServerInfoFromCache(serverId);
+}
 
 async function getOverallData() {
   // fetch data from API - default to 7 day lookback
@@ -38,15 +47,13 @@ async function getUserData() {
   return userData;
 }
 
-const [summaryData, userData] = await Promise.all([getOverallData(), getUserData()]);
+const [summaryData, userData, serverInfo] = await Promise.all([getOverallData(), getUserData(), getServerInfo()]);
 ---
 
 <Layout title="View Server">
   <div class="flex flex-row items-center justify-center mb-8">
-    <!-- TODO: This will be the server icon -->
-    <span style="border-radius: 50%; height: 48px; width: 48px;" class="inline-block bg-gradient mr-2"></span>
-    <!-- TODO: Server Name -->
-    <h1 class="text-4xl">Server Name</h1>
+    <img src={serverInfo.icon} alt="" class="rounded-full w-20 h-20 mr-2" />
+    <h1 class="text-4xl">{serverInfo.name}</h1>
   </div>
   <h1 class="text-2xl">Total Server Time</h1>
   <ServerData data={summaryData} client:load />

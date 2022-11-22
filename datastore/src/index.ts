@@ -15,7 +15,6 @@ app.post('/log', (req, res) => {
     return;
   }
   const now = new Date().toISOString();
-  console.log(guildId, userId, now);
   addUserEntry(guildId, userId, now);
   res.send({});
 });

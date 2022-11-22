@@ -78,7 +78,7 @@ GROUP BY
 
 export const TIME_PER_USER = `
 SELECT
-		userId,
+		cast(userId as TEXT) userId,
 		sum(total_minutes) time
 FROM
 		user_time_by_hour

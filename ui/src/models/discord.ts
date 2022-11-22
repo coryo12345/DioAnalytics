@@ -4,3 +4,8 @@ export type DiscordUser = {
   discriminator: string;
   icon: string;
 };
+
+export type GuildInfo = {
+  name: string;
+  icon: string;
+};
