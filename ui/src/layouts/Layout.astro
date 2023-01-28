@@ -16,7 +16,7 @@ const { title } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <main class="max-w-5xl text-center w-max mx-auto py-8">
+    <main class="max-w-5xl text-center mx-auto py-8">
       <slot />
     </main>
     <div class="main-tooltip py-1 px-2"></div>
@@ -28,6 +28,7 @@ const { title } = Astro.props;
     --accent: 87, 138, 237;
     --accent-gradient: linear-gradient(45deg, rgb(var(--accent)), #5bb8e3 30%, white 60%);
     --white: #f6f6f6;
+    --text: #000000;
   }
 
   .bg-gradient {
@@ -66,5 +67,24 @@ const { title } = Astro.props;
     left: 0;
     display: none;
     translate: -50% calc(-100% - 12px);
+  }
+
+  .datatable {
+    --easy-table-header-font-size: 1.2em;
+    --easy-table-header-height: 2em;
+
+    --easy-table-header-item-padding: 10px 15px;
+
+    --easy-table-body-row-height: 3em;
+    --easy-table-body-row-font-size: 1em;
+
+    --easy-table-body-item-padding: 10px 15px;
+
+    --easy-table-footer-font-size: 1em;
+    --easy-table-footer-padding: 0px 10px;
+    --easy-table-footer-height: 3em;
+
+    --easy-table-rows-per-page-selector-width: 70px;
+    --easy-table-rows-per-page-selector-option-padding: 10px;
   }
 </style>

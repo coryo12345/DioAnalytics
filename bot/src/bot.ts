@@ -1,11 +1,19 @@
-import { Client, Collection, GatewayIntentBits, Guild, GuildMember } from 'discord.js';
+import { Client, GatewayIntentBits, VoiceState } from 'discord.js';
 import axios from 'axios';
 
-const LOG_TIMEOUT = 1000 * 50; // this should be at least once a minute
-const DATASTORE_URL = process.env.DATASTORE_URL;
+let DATASTORE_URL: string;
 
-export function startBot(botToken: string, timelogURL: string) {
-  const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+export function startBot(botToken: string, timelogURL: string, datastore_url: string) {
+  DATASTORE_URL = datastore_url;
+
+  const client = new Client({
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildPresences,
+      GatewayIntentBits.GuildVoiceStates,
+    ],
+  });
 
   client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -15,40 +23,30 @@ export function startBot(botToken: string, timelogURL: string) {
     if (!interaction.isChatInputCommand()) return;
 
     if (interaction.commandName === 'timelogs') {
-      await interaction.reply({ content: timelogURL });
+      const serverId = interaction.guildId;
+      await interaction.reply({ content: `${timelogURL}/server?id=${serverId}` });
     }
   });
 
   client.login(botToken);
 
-  setInterval(() => {
-    logTimeForAllServers(client);
-  }, LOG_TIMEOUT);
+  client.on('voiceStateUpdate', handleVoiceStateUpdate);
 }
 
-async function logTimeForAllServers(client: Client) {
-  const guildManager = client.guilds;
-  await guildManager.fetch();
-  guildManager.cache.forEach((guild) => {
-    logTimeForServer(guild);
-  });
+function handleVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
+  const oldId = oldState.channelId;
+  const newId = newState.channelId;
+  if (oldId === null && newId !== null) {
+    logUserJoined(newState.id, newState.guild.id);
+  } else if (oldId !== null && newId === null) {
+    logUserLeft(oldState.id, oldState.guild.id);
+  }
 }
 
-async function logTimeForServer(guild: Guild) {
-  const channelManager = guild.channels;
-  await channelManager.fetch();
-  channelManager.cache
-    .filter((chan) => chan.isVoiceBased() && chan.id != guild.afkChannelId)
-    .forEach(async (channel) => {
-      try {
-        await channel.fetch();
-      } catch (err) {
-        return;
-      }
-      (channel.members as Collection<string, GuildMember>).forEach((member, id) => {
-        console.log(`${guild.name} ${channel.name} ${id} ${member.user.username}#${member.user.discriminator}`);
-        // send this log to the datastore service
-        axios.post(`${DATASTORE_URL}/log?guild=${guild.id}&user=${id}`);
-      });
-    });
+function logUserJoined(userId: string, guildId: string) {
+  axios.post(`${DATASTORE_URL}/log/join?guild=${guildId}&user=${userId}`);
+}
+
+function logUserLeft(userId: string, guildId: string) {
+  axios.post(`${DATASTORE_URL}/log/exit?guild=${guildId}&user=${userId}`);
 }

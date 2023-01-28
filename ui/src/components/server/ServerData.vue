@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { convertToNow, prettyDate } from '../../../utils/date';
+import { DEFAULT_LOOKBACK, LOOKBACKS } from '../../constants';
 import type { OverallData } from '../../models/server';
 import AreaChart from '../charts/AreaChart.vue';
 
 // props
 const props = defineProps<{
   data: OverallData[];
+  serverId: string;
 }>();
 
 // data
@@ -29,24 +31,27 @@ const data = computed<ConvertedData[]>(() => {
 });
 
 // Chart funcs
-const x = (item: any) => item.ms;
-const y = (item: OverallData) => item.time;
+const x = (item: ConvertedData) => item.ms;
+const y = (item: ConvertedData) => item.time;
 
 // lookback
-const lookbacks = ref(['Last 7 Days', 'Last 24 Hours', 'Last 30 Days']);
-const selectedLookback = ref(lookbacks.value[0]);
+const lookbacks = ref(LOOKBACKS);
+const selectedLookback = ref(DEFAULT_LOOKBACK.name);
 watch(
   () => selectedLookback.value,
-  async (lookback) => {
-    // TODO: fetch new data
-    const resp = await fetch(``);
+  async (lookbackName) => {
+    const lookback = LOOKBACKS.find((l) => l.name === lookbackName);
+    if (!lookback) return;
+    const resp = await fetch(`/api/totalServerData?serverId=${props.serverId}&lookback=${lookback.days}`);
+    const totalData = (await resp.json()) as OverallData[];
+    _data.value = totalData;
   }
 );
 </script>
 
 <template>
   <select v-model="selectedLookback" class="px-2 py-1">
-    <option v-for="lookback in lookbacks" :key="lookback">{{ lookback }}</option>
+    <option v-for="lookback in lookbacks" :key="lookback.days" :value="lookback.name">{{ lookback.name }}</option>
   </select>
   <area-chart id="overall-server-data" :data="data" :x="x" :y="y">
     <template #tooltip="{ item }">

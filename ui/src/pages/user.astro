@@ -1,0 +1,40 @@
+---
+import UserData from '../components/user/UserData.vue';
+import { DEFAULT_LOOKBACK } from '../constants';
+import { getServerInfoFromCache } from '../discord/serverCache';
+import { getUserDetailsFromCache } from '../discord/userCache';
+import Layout from '../layouts/Layout.astro';
+import getUserData from '../server/userData';
+
+const urlSearchParams = new URLSearchParams(Astro.url.search);
+const params = Object.fromEntries(urlSearchParams.entries());
+
+if (!params.userId || !params.userId.length || !params.serverId || !params.serverId.length) {
+  return Astro.redirect('/');
+}
+
+const serverId = params.serverId;
+const userId = params.userId;
+const lookback = DEFAULT_LOOKBACK.days;
+
+const [serverInfo, userInfo, userData] = await Promise.all([
+  getServerInfoFromCache(serverId),
+  getUserDetailsFromCache(userId),
+  getUserData(userId, serverId, lookback),
+]);
+---
+
+<Layout title="View User">
+  <!-- server -->
+  <div class="flex flex-row items-center justify-center mb-8">
+    <img src={serverInfo.icon} alt="" class="rounded-full w-20 h-20 mr-2" />
+    <h1 class="text-4xl">{serverInfo.name}</h1>
+  </div>
+  <!-- user -->
+  <div class="flex flex-row items-center justify-center mb-8">
+    <img src={userInfo.icon} alt="" class="rounded-full w-16 h-16 mr-2" />
+    <h1 class="text-3xl">{userInfo.username}#{userInfo.discriminator}</h1>
+  </div>
+
+  <UserData data={userData} client:load />
+</Layout>
