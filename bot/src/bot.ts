@@ -31,11 +31,19 @@ export function startBot(botToken: string, timelogURL: string, datastore_url: st
   client.login(botToken);
 
   client.on('voiceStateUpdate', handleVoiceStateUpdate);
+
+  findInitialState(client);
+
+  setInterval(heartbeat, 1000 * 60);
+}
+
+async function heartbeat() {
+  axios.get(`${DATASTORE_URL}/log/heartbeat`);
 }
 
 function handleVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
-  const oldId = oldState.channelId;
-  const newId = newState.channelId;
+  const oldId = oldState.channelId !== oldState.guild.afkChannelId ? oldState.channelId : null;
+  const newId = newState.channelId !== newState.guild.afkChannelId ? newState.channelId : null;
   if (oldId === null && newId !== null) {
     logUserJoined(newState.id, newState.guild.id);
   } else if (oldId !== null && newId === null) {
@@ -49,4 +57,24 @@ function logUserJoined(userId: string, guildId: string) {
 
 function logUserLeft(userId: string, guildId: string) {
   axios.post(`${DATASTORE_URL}/log/exit?guild=${guildId}&user=${userId}`);
+}
+
+async function findInitialState(client: Client) {
+  const guilds = await client.guilds.fetch();
+  guilds.forEach(async (_guild) => {
+    const guild = await _guild.fetch();
+    const channels = await guild.channels.fetch();
+    channels
+      .filter((chan) => chan.isVoiceBased() && chan.id !== guild.afkChannelId)
+      .forEach(async (_chan) => {
+        try {
+          const chan = await _chan.fetch();
+          chan.members.forEach((member) => {
+            logUserJoined(member.id, guild.id);
+          });
+        } catch (err) {
+          // if the bot doesn't have permission to a channel - just ignore
+        }
+      });
+  });
 }

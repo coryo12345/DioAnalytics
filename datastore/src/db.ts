@@ -2,6 +2,7 @@ import { Database, open } from 'sqlite';
 import { Database as DBDriver } from 'sqlite3';
 import { readFileSync } from 'fs';
 import {
+  CLEAR_ALL_LOGS,
   INSERT_RAW_LOG,
   PROCESS_RAW_LOGS,
   REMOVE_RAW_LOG,
@@ -44,6 +45,13 @@ export async function removeUserEntry(guildId: string, userId: string) {
   const query = REMOVE_RAW_LOG;
   const stmt = await db.prepare(query, guildId, userId);
   stmt.run();
+}
+
+export async function removeAllUserEntries() {
+  const db = await getDb();
+  const query = CLEAR_ALL_LOGS;
+  db.exec(query);
+  return 1;
 }
 
 export async function processRawLogs() {

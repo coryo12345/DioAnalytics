@@ -5,6 +5,7 @@ import {
   getSingleUserDataByServerAndLookback,
   getUsersDataByServerAndLookback,
   processRawLogs,
+  removeAllUserEntries,
   removeUserEntry,
 } from './db';
 
@@ -13,6 +14,26 @@ const DEFAULT_LOOKBACK = '7';
 
 const app = express();
 app.use(express.json());
+
+// HEARTBEAT ==========================================
+// If we haven't heard from the bot within the last HEARTBEAT_MAX_GAP ms,
+// then clear all current active users so we don't incorrectly record time
+const HEARTBEAT_MAX_GAP = 1000 * 60 * 5; // 5 min
+const HEARTBEAT_CHECK = 1000 * 60; // 1 min
+let lastHeartbeatTime = new Date();
+
+app.get('/log/heartbeat', (req, res) => {
+  lastHeartbeatTime = new Date();
+  return res.send({});
+});
+
+setInterval(() => {
+  const now = new Date();
+  if (now.getTime() - lastHeartbeatTime.getTime() >= HEARTBEAT_MAX_GAP) {
+    removeAllUserEntries();
+  }
+}, HEARTBEAT_CHECK);
+// ====================================================
 
 app.post('/log/join', (req, res) => {
   const guildId = req.query.guild ? req.query.guild.toString() : null;
@@ -92,8 +113,11 @@ app.get('/user', async (req, res) => {
   res.send(data);
 });
 
-app.listen(PORT);
-console.log('Listening on port:', PORT);
+// clear any entries before we listen for new logs
+removeAllUserEntries().then((_resp) => {
+  app.listen(PORT);
+  console.log('Listening on port:', PORT);
 
-// periodically compile log data
-setInterval(processRawLogs, 1000 * 60);
+  // periodically compile log data
+  setInterval(processRawLogs, 1000 * 60);
+});

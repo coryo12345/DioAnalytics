@@ -2,6 +2,8 @@ export const INSERT_RAW_LOG = 'INSERT INTO logs_raw VALUES (?, ?, ?)';
 
 export const REMOVE_RAW_LOG = 'DELETE FROM logs_raw WHERE guildId = ? and userId = ?;';
 
+export const CLEAR_ALL_LOGS = `DELETE FROM logs_raw;`;
+
 export const PROCESS_RAW_LOGS = `
 BEGIN;
 
