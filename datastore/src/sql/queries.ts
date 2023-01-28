@@ -83,3 +83,20 @@ GROUP BY
 		userId
 ;
 `;
+
+export const TIME_BY_USER = `
+SELECT
+		day,
+		hour,
+		sum(total_minutes) time
+FROM
+		user_time_by_hour
+WHERE
+		guildId = ?
+		AND userId = ?
+		AND day > datetime('now', ?)
+GROUP BY
+		day,
+		hour
+;
+`;

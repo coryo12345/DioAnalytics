@@ -36,5 +36,5 @@ const [serverInfo, userInfo, userData] = await Promise.all([
     <h1 class="text-3xl">{userInfo.username}#{userInfo.discriminator}</h1>
   </div>
 
-  <UserData data={userData} client:load />
+  <UserData data={userData} serverId={serverId} userId={userId} client:load />
 </Layout>
