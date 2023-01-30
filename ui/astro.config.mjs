@@ -13,5 +13,13 @@ import node from "@astrojs/node";
 export default defineConfig({
   integrations: [tailwind(), vue({ appEntrypoint: '/src/_vue.ts' })],
   output: "server",
-  adapter: node({ mode: "standalone" })
+  adapter: node({ mode: "standalone" }),
+  vite: {
+    build: {
+      target: 'esnext'
+    },
+    optimizeDeps: {
+      esbuildOptions: { target: 'es2020' }
+    }
+  }
 });

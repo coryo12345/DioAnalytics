@@ -64,15 +64,15 @@ app.get('/server', async (req, res) => {
     res.sendStatus(400);
     return;
   }
-  const daysStr = req.query.days ? req.query.days.toString() : DEFAULT_LOOKBACK;
-  let days: number;
+  const hoursStr = req.query.hours ? req.query.hours.toString() : DEFAULT_LOOKBACK;
+  let hours: number;
   try {
-    days = parseInt(daysStr);
+    hours = parseInt(hoursStr);
   } catch (err) {
     res.sendStatus(400);
     return;
   }
-  const data = await getServerDataByLookback(guildId, days);
+  const data = await getServerDataByLookback(guildId, hours);
   res.send(data);
 });
 
@@ -82,15 +82,15 @@ app.get('/users', async (req, res) => {
     res.sendStatus(400);
     return;
   }
-  const daysStr = req.query.days ? req.query.days.toString() : DEFAULT_LOOKBACK;
-  let days: number;
+  const hoursStr = req.query.hours ? req.query.hours.toString() : DEFAULT_LOOKBACK;
+  let hours: number;
   try {
-    days = parseInt(daysStr);
+    hours = parseInt(hoursStr);
   } catch (err) {
     res.sendStatus(400);
     return;
   }
-  const data = await getUsersDataByServerAndLookback(guildId, days);
+  const data = await getUsersDataByServerAndLookback(guildId, hours);
   res.send(data);
 });
 
@@ -101,15 +101,15 @@ app.get('/user', async (req, res) => {
     res.sendStatus(400);
     return;
   }
-  const daysStr = req.query.days ? req.query.days.toString() : DEFAULT_LOOKBACK;
-  let days: number;
+  const hoursStr = req.query.hours ? req.query.hours.toString() : DEFAULT_LOOKBACK;
+  let hours: number;
   try {
-    days = parseInt(daysStr);
+    hours = parseInt(hoursStr);
   } catch (err) {
     res.sendStatus(400);
     return;
   }
-  const data = await getSingleUserDataByServerAndLookback(guildId, userId, days);
+  const data = await getSingleUserDataByServerAndLookback(guildId, userId, hours);
   res.send(data);
 });
 

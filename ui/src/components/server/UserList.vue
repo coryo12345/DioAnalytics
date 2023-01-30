@@ -57,7 +57,7 @@ watch(
   async (lookbackName) => {
     const lookback = LOOKBACKS.find((l) => l.name === lookbackName);
     if (!lookback) return;
-    const resp = await fetch(`/api/serverUserData?serverId=${props.serverId}&lookback=${lookback.days}`);
+    const resp = await fetch(`/api/serverUserData?serverId=${props.serverId}&lookback=${lookback.hours}`);
     const totalData = (await resp.json()) as UserTimeSummary[];
     _data.value = totalData;
     _data.value.forEach(({ userId }) => {
@@ -73,7 +73,7 @@ function viewUser(user: UserRow) {
 
 <template>
   <select v-model="selectedLookback" class="px-2 py-1 mb-2">
-    <option v-for="lookback in lookbacks" :key="lookback.days" :value="lookback.name">{{ lookback.name }}</option>
+    <option v-for="lookback in lookbacks" :key="lookback.hours" :value="lookback.name">{{ lookback.name }}</option>
   </select>
   <EasyDataTable :headers="headers" :items="data" table-class-name="datatable">
     <template #item-username="item">

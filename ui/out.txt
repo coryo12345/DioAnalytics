@@ -1,0 +1,9 @@
+
+> @example/basics@0.0.1 dev
+> astro dev
+
+  🚀  astro  v1.6.6 started in 48ms
+  
+  ┃ Local    http://localhost:3000/
+  ┃ Network  use --host to expose
+  

@@ -43,6 +43,7 @@ export function AreaChart(data, {
     const xScale = xType(xDomain, xRange);
     const yScale = yType(yDomain, yRange);
     const xAxis = d3.axisBottom(xScale).ticks(width / 80).tickSizeOuter(0);
+    // const xAxis = d3.axisBottom(xScale).ticks(d3.timeHour.every(1)).tickSizeOuter(0);
     const yAxis = d3.axisLeft(yScale).ticks(height / 40, yFormat);
 
     const tooltip = d3.select('.main-tooltip');

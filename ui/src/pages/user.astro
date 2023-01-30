@@ -15,7 +15,7 @@ if (!params.userId || !params.userId.length || !params.serverId || !params.serve
 
 const serverId = params.serverId;
 const userId = params.userId;
-const lookback = DEFAULT_LOOKBACK.days;
+const lookback = DEFAULT_LOOKBACK.hours;
 
 const [serverInfo, userInfo, userData] = await Promise.all([
   getServerInfoFromCache(serverId),
@@ -36,5 +36,6 @@ const [serverInfo, userInfo, userData] = await Promise.all([
     <h1 class="text-3xl">{userInfo.username}#{userInfo.discriminator}</h1>
   </div>
 
+  <p class="mb-1">Data is calculated per-hour. (e.g. Data from 6:00-6:59 will show under 6:00)</p>
   <UserData data={userData} serverId={serverId} userId={userId} client:load />
 </Layout>

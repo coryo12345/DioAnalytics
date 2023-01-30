@@ -65,7 +65,7 @@ FROM
 		user_time_by_hour
 WHERE
 		guildId = ?
-		AND day > datetime('now', ?)
+		AND datetime(day, hour || ' hours') >= datetime('now', ?)
 GROUP BY
 		day,
 		hour

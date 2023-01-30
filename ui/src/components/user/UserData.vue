@@ -43,7 +43,7 @@ watch(
     const lookback = LOOKBACKS.find((l) => l.name === lookbackName);
     if (!lookback) return;
     const resp = await fetch(
-      `/api/userData?userId=${props.userId}&serverId=${props.serverId}&lookback=${lookback.days}`
+      `/api/userData?userId=${props.userId}&serverId=${props.serverId}&lookback=${lookback.hours}`
     );
     const totalData = (await resp.json()) as OverallData[];
     _data.value = totalData;
@@ -53,7 +53,7 @@ watch(
 
 <template>
   <select v-model="selectedLookback" class="px-2 py-1 mb-2">
-    <option v-for="lookback in lookbacks" :key="lookback.days" :value="lookback.name">{{ lookback.name }}</option>
+    <option v-for="lookback in lookbacks" :key="lookback.hours" :value="lookback.name">{{ lookback.name }}</option>
   </select>
 
   <area-chart id="user-data-chart" :data="data" :x="x" :y="y">

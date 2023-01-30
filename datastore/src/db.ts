@@ -60,8 +60,8 @@ export async function processRawLogs() {
   db.exec(query);
 }
 
-export async function getServerDataByLookback(guildId: string, days: number) {
-  const modifier = `-${days} days`;
+export async function getServerDataByLookback(guildId: string, hours: number) {
+  const modifier = `-${hours} hours`;
   const db = await getDb();
   const query = TIME_BY_SERVER;
   const results = db.all(query, guildId, modifier);
@@ -75,16 +75,16 @@ export async function getServerDataByLookback(guildId: string, days: number) {
   });
 }
 
-export async function getUsersDataByServerAndLookback(guildId: string, days: number) {
-  const modifier = `-${days} days`;
+export async function getUsersDataByServerAndLookback(guildId: string, hours: number) {
+  const modifier = `-${hours} hours`;
   const db = await getDb();
   const query = TIME_PER_USER;
   const results = db.all(query, guildId, modifier);
   return results;
 }
 
-export async function getSingleUserDataByServerAndLookback(guildId: string, userId: string, days: number) {
-  const modifier = `-${days} days`;
+export async function getSingleUserDataByServerAndLookback(guildId: string, userId: string, hours: number) {
+  const modifier = `-${hours} hours`;
   const db = await getDb();
   const query = TIME_BY_USER;
   const results = db.all(query, guildId, userId, modifier);
