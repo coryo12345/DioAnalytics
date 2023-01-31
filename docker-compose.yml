@@ -8,7 +8,7 @@ services:
       context: ./datastore
       dockerfile: dockerfile
     volumes:
-      - ./datastore/data:/app/data
+      - datastore_data:/app/data
 
   bot:
     container_name: dioanalytics-bot
@@ -38,3 +38,6 @@ services:
       - 5173:3000
     depends_on:
       - datastore
+
+volumes:
+  datastore_data:
