@@ -1,5 +1,4 @@
 ---
-import { Client } from 'discord.js';
 import 'vue3-easy-data-table/dist/style.css';
 import ServerData from '../components/server/ServerData.vue';
 import UserList from '../components/server/UserList.vue';
@@ -8,9 +7,6 @@ import { getServerInfoFromCache } from '../discord/serverCache';
 import Layout from '../layouts/Layout.astro';
 import { getUserData } from '../server/serverUserData';
 import { getOverallData } from '../server/totalServerData';
-
-const client = new Client({ intents: [] });
-client.login(import.meta.env.DISCORD_BOT_TOKEN);
 
 const urlSearchParams = new URLSearchParams(Astro.url.search);
 const params = Object.fromEntries(urlSearchParams.entries());
@@ -34,13 +30,20 @@ const [summaryData, userData, serverInfo] = await Promise.all([
 ---
 
 <Layout title="View Server">
-  <div class="flex flex-row items-center justify-center mb-8">
-    <img src={serverInfo.icon} alt="" class="rounded-full w-20 h-20 mr-2" />
-    <h1 class="text-4xl">{serverInfo.name}</h1>
-  </div>
-  <h1 class="text-2xl">Total Server Time</h1>
-  <p class="my-1">Data is calculated per-hour. (e.g. Data from 6:00-6:59 will show under 6:00)</p>
-  <ServerData data={summaryData} serverId={serverId} client:load />
-  <h1 class="mt-8 text-2xl mb-2">Time by User</h1>
-  <UserList client:visible userData={userData} serverId={serverId} />
+  {
+    !!serverInfo && (
+      <div class="flex flex-row items-center justify-center mb-8">
+        <img src={serverInfo.icon} alt="" class="rounded-full w-20 h-20 mr-2" />
+        <h1 class="text-4xl">{serverInfo.name}</h1>
+      </div>
+      <h1 class="text-2xl">Total Server Time</h1>
+      <p class="my-1">Data is calculated per-hour. (e.g. Data from 6:00-6:59 will show under 6:00)</p>
+      <ServerData data={summaryData} serverId={serverId} client:load />
+      <h1 class="mt-8 text-2xl mb-2">Time by User</h1>
+      <UserList client:visible userData={userData} serverId={serverId} />
+    )
+  }
+  {
+    !serverInfo && <h2>Server Not Found</h2>
+  }
 </Layout>

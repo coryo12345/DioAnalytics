@@ -26,16 +26,25 @@ const [serverInfo, userInfo, userData] = await Promise.all([
 
 <Layout title="View User">
   <!-- server -->
-  <div class="flex flex-row items-center justify-center mb-8">
-    <img src={serverInfo.icon} alt="" class="rounded-full w-20 h-20 mr-2" />
-    <h1 class="text-4xl">{serverInfo.name}</h1>
-  </div>
-  <!-- user -->
-  <div class="flex flex-row items-center justify-center mb-8">
-    <img src={userInfo.icon} alt="" class="rounded-full w-16 h-16 mr-2" />
-    <h1 class="text-3xl">{userInfo.username}#{userInfo.discriminator}</h1>
-  </div>
-
+  {
+    !!serverInfo && (
+      <div class="flex flex-row items-center justify-center mb-8">
+        <img src={serverInfo.icon} alt="" class="rounded-full w-20 h-20 mr-2" />
+        <h1 class="text-4xl">{serverInfo.name}</h1>
+      </div>
+    )
+  }
+  {!serverInfo && <h2>Server Not Found</h2>}
+  {
+    userInfo && (
+      <div class="flex flex-row items-center justify-center mb-8">
+        <img src={userInfo.icon} alt="" class="rounded-full w-16 h-16 mr-2" />
+        <h1 class="text-3xl">
+          {userInfo.username}#{userInfo.discriminator}
+        </h1>
+      </div>
+    )
+  }
   <p class="mb-1">Data is calculated per-hour. (e.g. Data from 6:00-6:59 will show under 6:00)</p>
   <UserData data={userData} serverId={serverId} userId={userId} client:load />
 </Layout>

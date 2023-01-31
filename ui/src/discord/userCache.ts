@@ -1,13 +1,15 @@
 import { Client, Partials } from 'discord.js';
 import type { DiscordUser } from '../models/discord';
 
+const CACHE_DURATION = 1000 * 60 * 5; // 5 min in ms
+
 const client = new Client({ intents: ['GuildMembers'], partials: [Partials.User, Partials.GuildMember] });
-client.login(import.meta.env.DISCORD_BOT_TOKEN);
+const token = import.meta.env.DISCORD_BOT_TOKEN ?? process.env.DISCORD_BOT_TOKEN;
+client.login(token);
 
 export const getUserDetailsFromCache = newCachedUserGetter();
 
-function newCachedUserGetter() {
-  const CACHE_DURATION = 1000 * 60 * 5; // 5 min in ms
+function newCachedUserGetter(): (userId: string) => Promise<DiscordUser | null> {
   const cachedUsers = new Map<string, DiscordUser>();
   const cachedTime = new Map<string, number>();
 
@@ -28,12 +30,7 @@ function newCachedUserGetter() {
         icon: fullUser.avatarURL() || '',
       };
     } catch (err) {
-      return {
-        id: userId,
-        username: '',
-        discriminator: '',
-        icon: '',
-      };
+      return null;
     }
 
     cachedUsers.set(userId, user);

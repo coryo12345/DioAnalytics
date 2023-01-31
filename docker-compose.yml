@@ -8,7 +8,7 @@ services:
       context: ./datastore
       dockerfile: dockerfile
     volumes:
-      - timelogs:/app/data
+      - ./datastore/data:/app/data
 
   bot:
     container_name: dioanalytics-bot
@@ -16,11 +16,25 @@ services:
     build:
       context: ./bot
       dockerfile: dockerfile
+    environment:
+      - DISCORD_BOT_TOKEN
+      - DISCORD_CLIENT_ID
+      - TIMELOG_URL=https://discordtimelogs.corydio.com
+      - DATASTORE_URL=http://datastore:3001
     depends_on:
       - datastore
 
-  # ui:
-  # TODO
-
-volumes:
-  timelogs:
+  ui:
+    container_name: dioanalytics-ui
+    image: dioanalytics-ui
+    build:
+      context: ./ui
+      dockerfile: dockerfile
+    environment:
+      - DISCORD_BOT_TOKEN
+      - DISCORD_CLIENT_ID
+      - DATASTORE_URL=http://datastore:3001
+    ports:
+      - 5173:3000
+    depends_on:
+      - datastore
