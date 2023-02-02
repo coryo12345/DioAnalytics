@@ -16,7 +16,7 @@ export default defineConfig({
   adapter: node({ mode: "standalone" }),
   vite: {
     build: {
-      target: 'esnext'
+      target: 'es2020'
     },
     optimizeDeps: {
       esbuildOptions: { target: 'es2020' }

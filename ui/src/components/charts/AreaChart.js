@@ -70,10 +70,12 @@ export function AreaChart(data, {
             .attr("x2", width - marginLeft - marginRight)
             .attr("stroke-opacity", 0.1))
         .call(g => g.append("text")
-            .attr("x", -marginLeft)
-            .attr("y", 10)
+            .attr("x", -1 * (height / 2))
+            .attr("y", -1 * marginLeft + 10)
             .attr("fill", "currentColor")
             .attr("text-anchor", "start")
+            .attr("transform", "rotate(-90)")
+            .style("font-size", 20)
             .text(yLabel));
 
     svg.append("g")

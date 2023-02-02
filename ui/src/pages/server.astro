@@ -36,8 +36,8 @@ const [summaryData, userData, serverInfo] = await Promise.all([
         <img src={serverInfo.icon} alt="" class="rounded-full w-20 h-20 mr-2" />
         <h1 class="text-4xl">{serverInfo.name}</h1>
       </div>
-      <h1 class="text-2xl">Total Server Time</h1>
       <p class="my-1">Data is calculated per-hour. (e.g. Data from 6:00-6:59 will show under 6:00)</p>
+      <h1 class="text-2xl my-2">Server Time</h1>
       <ServerData data={summaryData} serverId={serverId} client:load />
       <h1 class="mt-8 text-2xl mb-2">Time by User</h1>
       <UserList client:visible userData={userData} serverId={serverId} />

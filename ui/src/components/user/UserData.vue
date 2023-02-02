@@ -2,11 +2,11 @@
 import { computed, ref, watch } from 'vue';
 import { convertToNow, prettyDate } from '../../../utils/date';
 import { DEFAULT_LOOKBACK, LOOKBACKS } from '../../constants';
-import type { OverallData } from '../../models/server';
+import type { DataPoint } from '../../models/server';
 import AreaChart from '../charts/AreaChart.vue';
 
 const props = defineProps<{
-  data: OverallData[];
+  data: DataPoint[];
   serverId: string;
   userId: string;
 }>();
@@ -17,9 +17,9 @@ type ConvertedData = {
   ms: number;
   time: number;
 };
-const _data = ref<OverallData[]>(props.data);
+const _data = ref<DataPoint[]>(props.data);
 const data = computed<ConvertedData[]>(() => {
-  return _data.value.map((item: OverallData) => {
+  return _data.value.map((item: DataPoint) => {
     const d = convertToNow(item.day);
     const ms = new Date(d).getTime();
     return {
@@ -45,7 +45,7 @@ watch(
     const resp = await fetch(
       `/api/userData?userId=${props.userId}&serverId=${props.serverId}&lookback=${lookback.hours}`
     );
-    const totalData = (await resp.json()) as OverallData[];
+    const totalData = (await resp.json()) as DataPoint[];
     _data.value = totalData;
   }
 );
@@ -60,7 +60,7 @@ watch(
     <template #tooltip="{ item }">
       <div class="text-center">
         <p>{{ prettyDate(item.day) }}</p>
-        <p>Total Minutes: {{ item.time }}</p>
+        <p>Total Person-Minutes: {{ item.time }}</p>
       </div>
     </template>
   </area-chart>

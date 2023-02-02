@@ -1,15 +1,15 @@
-import type { OverallData } from '../models/server';
+import type { DataPoint } from '../models/server';
 
 const HOUR_IN_MS = 3600000;
 
-function dataComparator(a: OverallData, b: OverallData) {
+function dataComparator(a: DataPoint, b: DataPoint) {
   return new Date(a.day).getTime() - new Date(b.day).getTime();
 }
 
-export function fillDateGapsWithZero(data: OverallData[]): OverallData[] {
+export function fillDateGapsWithZero(data: DataPoint[]): DataPoint[] {
   data = data.sort(dataComparator);
 
-  const pointsToAdd: OverallData[] = [];
+  const pointsToAdd: DataPoint[] = [];
   data.forEach((dataPoint, index) => {
     if (index === data.length - 1) return;
     const _curr = new Date(dataPoint.day);

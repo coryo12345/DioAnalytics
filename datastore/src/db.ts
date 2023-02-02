@@ -9,6 +9,7 @@ import {
   TIME_BY_SERVER,
   TIME_BY_USER,
   TIME_PER_USER,
+  TOTAL_TIME_BY_SERVER,
 } from './sql/queries';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -60,19 +61,29 @@ export async function processRawLogs() {
   db.exec(query);
 }
 
-export async function getServerDataByLookback(guildId: string, hours: number) {
+export async function getServerDataByLookback(guildId: string, hours: number): Promise<TotalServerData> {
   const modifier = `-${hours} hours`;
   const db = await getDb();
-  const query = TIME_BY_SERVER;
-  const results = db.all(query, guildId, modifier);
 
-  return (await results).map((result) => {
+  const dataPointsQuery = TIME_BY_SERVER;
+  const totalTimeQuery = TOTAL_TIME_BY_SERVER;
+  let [dataPointsResults, totalTime] = await Promise.all([
+    db.all(dataPointsQuery, guildId, modifier),
+    db.get(totalTimeQuery, guildId, modifier),
+  ]);
+
+  const data = dataPointsResults.map((result) => {
     const d = new Date(result.day);
     return {
       time: result.time,
       day: new Date(d.getTime() + 3600000 * result.hour),
     };
   });
+
+  return {
+    total: totalTime.time,
+    data,
+  };
 }
 
 export async function getUsersDataByServerAndLookback(guildId: string, hours: number) {

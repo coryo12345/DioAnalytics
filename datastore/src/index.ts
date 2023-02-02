@@ -72,7 +72,7 @@ app.get('/server', async (req, res) => {
     res.sendStatus(400);
     return;
   }
-  const data = await getServerDataByLookback(guildId, hours);
+  const data: TotalServerData = await getServerDataByLookback(guildId, hours);
   res.send(data);
 });
 

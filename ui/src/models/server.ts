@@ -1,6 +1,11 @@
-export type OverallData = {
+export type DataPoint = {
   day: string;
   time: number;
+};
+
+export type TotalServerData = {
+  total: number; // total number of Person-Minutes
+  data: DataPoint[];
 };
 
 export type UserTimeSummary = {

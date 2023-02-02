@@ -71,6 +71,16 @@ GROUP BY
 		hour
 ;
 `;
+export const TOTAL_TIME_BY_SERVER = `
+SELECT
+		sum(total_minutes) time
+FROM
+		user_time_by_hour
+WHERE
+		guildId = ?
+		AND datetime(day, hour || ' hours') >= datetime('now', ?)
+;
+`;
 
 export const TIME_PER_USER = `
 SELECT

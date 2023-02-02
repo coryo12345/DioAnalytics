@@ -2,12 +2,17 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { AreaChart } from '../charts/AreaChart.js';
 
-const props = defineProps<{
+type Props = {
   data: any[];
   id: string;
   x: (d: any) => any;
   y: (d: any) => any;
-}>();
+  yLabel?: string;
+};
+
+const props = withDefaults(defineProps<Props>(), {
+  yLabel: 'Person-Minutes',
+});
 
 const id = computed(() => `${props.id}-area-chart`);
 
@@ -21,6 +26,7 @@ function renderChart() {
     x: props.x,
     y: props.y,
     tooltipCallback: tooltip,
+    yLabel: props.yLabel,
   });
   if (svg === null) return;
   const container = document.getElementById(id.value);
