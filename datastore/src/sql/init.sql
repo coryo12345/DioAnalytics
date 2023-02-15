@@ -13,3 +13,8 @@ CREATE TABLE IF NOT EXISTS user_time_by_hour (
     hour INT,
     total_minutes INT
 );
+
+CREATE TABLE IF NOT EXISTS opt_out_users (
+    userId STRING PRIMARY KEY,
+    opt_time TIMESTAMP
+);

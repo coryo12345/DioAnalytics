@@ -4,6 +4,8 @@ import {
   getServerDataByLookback,
   getSingleUserDataByServerAndLookback,
   getUsersDataByServerAndLookback,
+  optInUser,
+  optOutUser,
   processRawLogs,
   removeAllUserEntries,
   removeUserEntry,
@@ -57,6 +59,26 @@ app.post('/log/exit', (req, res) => {
   removeUserEntry(guildId, userId);
   res.send({});
 });
+
+// Opt-out / opt-in --------------------------------------------------
+app.post('/log/optOut', (req, res) => {
+  const userId = req.query.user ? req.query.user.toString() : null;
+  if (userId === null) {
+    return res.sendStatus(400);
+  }
+  optOutUser(userId);
+  res.sendStatus(200);
+});
+
+app.post('/log/optIn', (req, res) => {
+  const userId = req.query.user ? req.query.user.toString() : null;
+  if (userId === null) {
+    return res.sendStatus(400);
+  }
+  optInUser(userId);
+  res.sendStatus(200);
+});
+// ------------------------------------------------------------------
 
 app.get('/server', async (req, res) => {
   const guildId = req.query.guild ? req.query.guild.toString() : null;

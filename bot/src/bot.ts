@@ -25,6 +25,12 @@ export function startBot(botToken: string, timelogURL: string, datastore_url: st
     if (interaction.commandName === 'timelogs') {
       const serverId = interaction.guildId;
       await interaction.reply({ content: `${timelogURL}/server?id=${serverId}` });
+    } else if (interaction.commandName === 'optout') {
+      optOut(interaction.user.id);
+      interaction.reply({ content: `You have been opted out` });
+    } else if (interaction.commandName === 'optin') {
+      optIn(interaction.user.id);
+      interaction.reply({ content: `You have been opted back in` });
     }
   });
 
@@ -77,4 +83,12 @@ async function findInitialState(client: Client) {
         }
       });
   });
+}
+
+async function optOut(userId: string) {
+  axios.post(`${DATASTORE_URL}/log/optOut?user=${userId}`);
+}
+
+async function optIn(userId: string) {
+  axios.post(`${DATASTORE_URL}/log/optIn?user=${userId}`);
 }

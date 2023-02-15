@@ -56,6 +56,22 @@ select * from records_to_add;
 END;
 `;
 
+export const CHECK_USER_TRACK_STATUS = `
+SELECT userId
+FROM opt_out_users
+WHERE userId = ?;
+`;
+
+export const OPT_USER_OUT = `
+INSERT INTO opt_out_users 
+SELECT ?, datetime();
+`;
+
+export const OPT_USER_IN = `
+DELETE FROM opt_out_users 
+WHERE userId = ?;
+`;
+
 export const TIME_BY_SERVER = `
 SELECT
 		day,

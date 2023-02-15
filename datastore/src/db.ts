@@ -2,8 +2,11 @@ import { Database, open } from 'sqlite';
 import { Database as DBDriver } from 'sqlite3';
 import { readFileSync } from 'fs';
 import {
+  CHECK_USER_TRACK_STATUS,
   CLEAR_ALL_LOGS,
   INSERT_RAW_LOG,
+  OPT_USER_IN,
+  OPT_USER_OUT,
   PROCESS_RAW_LOGS,
   REMOVE_RAW_LOG,
   TIME_BY_SERVER,
@@ -36,8 +39,16 @@ async function getDb() {
 
 export async function addUserEntry(guildId: string, userId: string, timestamp: string) {
   const db = await getDb();
-  const query = INSERT_RAW_LOG;
-  const stmt = await db.prepare(query, guildId, userId, timestamp);
+
+  const checkStatusQuery = CHECK_USER_TRACK_STATUS;
+  const checkStmt = await db.prepare(checkStatusQuery, userId);
+  const users = await checkStmt.all();
+  if (users.length > 0) {
+    return;
+  }
+
+  const insertQuery = INSERT_RAW_LOG;
+  const stmt = await db.prepare(insertQuery, guildId, userId, timestamp);
   stmt.run();
 }
 
@@ -59,6 +70,20 @@ export async function processRawLogs() {
   const db = await getDb();
   const query = PROCESS_RAW_LOGS;
   db.exec(query);
+}
+
+export async function optOutUser(userId: string) {
+  const db = await getDb();
+  const query = OPT_USER_OUT;
+  const stmt = await db.prepare(query, userId);
+  stmt.run();
+}
+
+export async function optInUser(userId: string) {
+  const db = await getDb();
+  const query = OPT_USER_IN;
+  const stmt = await db.prepare(query, userId);
+  stmt.run();
 }
 
 export async function getServerDataByLookback(guildId: string, hours: number): Promise<TotalServerData> {
